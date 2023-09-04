@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.todo.mapper.DataMapper">
+	<sql id="ymd">
+		<trim prefix="and">
+			<if test="type == 'yy'">
+				to_char(contentdate,'yy') = #{contentdate}
+			</if>
+			<if test="type == 'mm'">
+				to_char(contentdate,'MM') = #{contentdate}
+			</if>
+			<if test="type == 'dd'">
+				to_char(contentdate,'DD') = #{contentdate}
+			</if>
+			<if test="type == 'md'">
+				to_char(contentdate,'MMdd') = #{contentdate}
+			</if>
+			<if test="type == 'semd'">
+				to_char(contentdate,'MMdd') = #{contentdate} and starttime = #{starttime} and endtime = #{endtime}
+			</if>
+			<if test="type == 'ymd'">
+				to_char(contentdate,'yyyyMMdd') = #{contentdate}
+			</if>
+		</trim>
+	</sql>
+	<sql id="id">
+		<trim prefix="where">
+			<if test="userid != null">
+				userid = #{userid}
+			</if>
+		</trim>
+	</sql>
+	<insert id="datainsert">
+		insert into s_date(userid,contentdate,starttime,endtime,contenttext,contfile)
+		values(#{userid},#{contentdate},#{starttime},#{endtime},#{contenttext},#{contfile})
+	</insert>
+	<select id="show" resultType="org.todo.domain.DataVO">
+		select * from s_date <include refid="id"></include>  <include refid="ymd"></include> order by contentdate asc, starttime asc
+	</select>
+	<delete id="remove">
+		delete s_date <include refid="id"></include> <include refid="ymd"></include>
+	</delete>
+</mapper>

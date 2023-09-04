@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.todo.mapper.MemberMapper">
+		<!-- 조회결과가 담긴 VO를 Map에 담아서 반환 -->
+	<!-- memeberMap안에 authMap을 인스턴스로 추가 -->
+	<!-- result = 값이 한개일경우 collection 값이 여러개일경우 -->
+	<resultMap type="org.todo.domain.MemberVO" id="memberMap">
+		<id property="userid" column="userid" />
+		<result property="userid" column="userid"/>
+		<result property="userpw" column="userpw"/>
+		<result property="email" column="eamil"/>
+		<collection property="authList" resultMap="authMap"/>
+	</resultMap>
+	<resultMap type="org.todo.domain.AuthVO" id="authMap">
+		<result property="userid" column="userid"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+	<select id="read" resultMap="memberMap">
+		select
+		mem.userid,userpw,auth
+		from smember mem left outer join smember_auth auth on mem.userid = auth.userid
+		where mem.userid = #{userid}
+	</select>
+	<insert id="insert">
+		insert into smember(userid,userpw,email,username)
+		values(#{userid},#{userpw},#{email},#{username})
+	</insert>
+</mapper>
